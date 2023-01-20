@@ -22,8 +22,9 @@ dependencies {
 
     implementation project(":Common")
 
-    shade("me.hypherionmc.sdlink:sdlink-lib:${library_ver}")
+    shade("blank:sdlink-lib:${library_ver}")
     shade "me.hypherionmc.sdlink:mcdiscordformatter-fabric-1.19.1:${formatter_ver}"
+    shade("blank:ozone:${ozone_ver}")
 }
 
 shadowJar {

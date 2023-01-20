@@ -90,6 +90,7 @@ dependencies {
 
     implementation("blank:sdlink-lib:${library_ver}")
     implementation("me.hypherionmc.sdlink:mcdiscordformatter-forge-1.19.1:${formatter_ver}")
+    implementation("blank:ozone:${ozone_ver}")
 }
 
 tasks.withType(JavaCompile) {
