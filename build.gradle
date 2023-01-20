@@ -49,6 +49,9 @@ subprojects {
                 includeGroup "maven.modrinth"
             }
         }
+        flatDir {
+            dirs 'libs'
+        }
     }
 
     tasks.withType(JavaCompile).configureEach {

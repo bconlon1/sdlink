@@ -20,5 +20,8 @@ build
 # other
 eclipse
 run
+Common/libs
+Fabric/libs
+Forge/libs
 
 artifacts
