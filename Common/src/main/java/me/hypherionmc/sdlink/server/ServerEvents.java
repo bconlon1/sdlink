@@ -1,5 +1,6 @@
 package me.hypherionmc.sdlink.server;
 
+import com.gildedgames.ozone.modules.roles.RolesModule;
 import com.gildedgames.ozone.modules.styling.ChatStylingModule;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
@@ -131,6 +132,7 @@ public class ServerEvents implements IMinecraftHelper {
     public void onServerChatEvent(Component message, Component user, String uuid) {
         if (botEngine != null && modConfig.generalConfig.enabled) {
             if (modConfig.chatConfig.playerMessages) {
+                String prefix = RolesModule.INSTANCE.getTeamPrefix(UUID.fromString(uuid));
                 String username = modConfig.messageConfig.formatting ? DiscordSerializer.INSTANCE.serialize(user.copy()) : ChatFormatting.stripFormatting(user.getString());
                 String msg = ChatStylingModule.unstyle(message);
                 if (msg.isEmpty()) {
@@ -139,7 +141,7 @@ public class ServerEvents implements IMinecraftHelper {
                 msg = msg.replaceAll("<" + username + ">", "");
                 msg = msg.replace(username, "");
                 botEngine.sendToDiscord(
-                        modConfig.messageConfig.chat.replace("%player%", username).replace("%message%", msg.replace("@everyone", "").replace("@Everyone", "").replace("@here", "").replace("@Here", "")),
+                        modConfig.messageConfig.chat.replace("%prefix%", prefix).replace("%player%", username).replace("%message%", msg.replace("@everyone", "").replace("@Everyone", "").replace("@here", "").replace("@Here", "")),
                         username,
                         uuid,
                         true
