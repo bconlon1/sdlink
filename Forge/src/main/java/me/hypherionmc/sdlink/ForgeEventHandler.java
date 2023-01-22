@@ -14,6 +14,7 @@ import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -51,7 +52,7 @@ public class ForgeEventHandler {
         ServerEvents.getInstance().onServerStoppedEvent();
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void serverChatEvent(ServerChatEvent event) {
         ServerEvents.getInstance().onServerChatEvent(event.getMessage(), event.getPlayer().getName(), event.getPlayer().getUUID().toString());
     }
