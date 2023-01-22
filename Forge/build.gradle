@@ -88,9 +88,9 @@ dependencies {
     compileOnly project(":Common")
     annotationProcessor 'org.spongepowered:mixin:0.8.4-SNAPSHOT:processor'
 
-    implementation("blank:sdlink-lib:${library_ver}")
+    implementation("me.hypherionmc.sdlink:sdlink-lib:${library_ver}")
     implementation("me.hypherionmc.sdlink:mcdiscordformatter-forge-1.19.1:${formatter_ver}")
-    implementation("blank:ozone:${ozone_ver}")
+    compileOnly("blank:ozone:${ozone_ver}")
 }
 
 tasks.withType(JavaCompile) {
@@ -107,7 +107,7 @@ processResources {
 
 shadowJar {
     dependencies {
-        include(dependency("blank:sdlink-lib:${library_ver}"))
+        include(dependency("me.hypherionmc.sdlink:sdlink-lib:${library_ver}"))
         include(dependency("me.hypherionmc.sdlink:mcdiscordformatter-forge-1.19.1:${formatter_ver}"))
     }
     classifier ''

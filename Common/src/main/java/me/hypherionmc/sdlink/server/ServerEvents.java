@@ -19,6 +19,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
@@ -98,7 +100,7 @@ public class ServerEvents implements IMinecraftHelper {
                 );
             }
         }
-        LogReader.init(botEngine, PlatformHelper.MOD_HELPER.isDevEnv());
+        //LogReader.init(botEngine, PlatformHelper.MOD_HELPER.isDevEnv());
     }
 
     public void onServerStopping() {
@@ -234,6 +236,8 @@ public class ServerEvents implements IMinecraftHelper {
         }
         try {
             MutableComponent component = modConfig.messageConfig.formatting ? MinecraftSerializer.INSTANCE.serialize(modConfig.chatConfig.mcPrefix.replace("%user%", s) + s1) : Component.literal(modConfig.chatConfig.mcPrefix.replace("%user%", s) + s1);
+            MutableComponent prefix = Component.literal("[Discord] ").withStyle(Style.EMPTY.withColor(TextColor.parseColor("#7289da")));
+            component = prefix.append(component);
             server.getPlayerList().broadcastSystemMessage(
                     component,
                     false
