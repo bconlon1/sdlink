@@ -1,5 +1,6 @@
 package me.hypherionmc.sdlink.server;
 
+import com.gildedgames.ozone.modules.styling.ChatStylingModule;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
@@ -31,10 +32,7 @@ import net.minecraft.world.level.BaseCommandBlock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static me.hypherionmc.sdlinklib.config.ConfigController.modConfig;
@@ -134,11 +132,12 @@ public class ServerEvents implements IMinecraftHelper {
         if (botEngine != null && modConfig.generalConfig.enabled) {
             if (modConfig.chatConfig.playerMessages) {
                 String username = modConfig.messageConfig.formatting ? DiscordSerializer.INSTANCE.serialize(user.copy()) : ChatFormatting.stripFormatting(user.getString());
-                String msg = modConfig.messageConfig.formatting ? DiscordSerializer.INSTANCE.serialize(message.copy()) : ChatFormatting.stripFormatting(message.getString());
-
+                String msg = ChatStylingModule.unstyle(message);
+                if (msg.isEmpty()) {
+                    msg = message.getString();
+                }
                 msg = msg.replaceAll("<" + username + ">", "");
                 msg = msg.replace(username, "");
-
                 botEngine.sendToDiscord(
                         modConfig.messageConfig.chat.replace("%player%", username).replace("%message%", msg.replace("@everyone", "").replace("@Everyone", "").replace("@here", "").replace("@Here", "")),
                         username,
@@ -235,9 +234,15 @@ public class ServerEvents implements IMinecraftHelper {
             SDLinkConstants.LOG.info("Got message {} from {}", s1, s);
         }
         try {
-            MutableComponent component = modConfig.messageConfig.formatting ? MinecraftSerializer.INSTANCE.serialize(modConfig.chatConfig.mcPrefix.replace("%user%", s) + s1) : Component.literal(modConfig.chatConfig.mcPrefix.replace("%user%", s) + s1);
-            MutableComponent prefix = Component.literal("[Discord] ").withStyle(Style.EMPTY.withColor(TextColor.parseColor("#7289da")));
-            component = prefix.append(component);
+            MutableComponent component = Component.literal("");
+            component.append(Component.literal("[Discord] ").withStyle(Style.EMPTY.withColor(TextColor.parseColor("#7289da"))));
+            component.append(Component.literal(modConfig.chatConfig.mcPrefix.replace("%user%", s)).withStyle(ChatFormatting.GRAY));
+            Component styled = Objects.requireNonNullElseGet(ChatStylingModule.style(null, s1), () -> Component.literal(s1));
+            if (styled.getStyle().getColor() == null) {
+                component.append(styled.copy().withStyle(ChatFormatting.GRAY));
+            } else {
+                component.append(styled);
+            }
             server.getPlayerList().broadcastSystemMessage(
                     component,
                     false
